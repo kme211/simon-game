@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from './Button';
+import StartButton from './StartButton';
 import './App.css';
 
 function getRandomId() {
@@ -22,17 +23,26 @@ class App extends Component {
     super(props);
 
     this.state = {
+      gameInProgress: false,
       userSequence: [],
-      sequence: [getRandomId()],
+      sequence: [],
       activeId: null,
       incorrectId: null
     };
 
     this.handleButtonPress = this.handleButtonPress.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
 
-  componentDidMount() {
-    this.runSequence();
+  startGame() {
+    console.log('startGame');
+    this.setState( { 
+      gameInProgress: true,
+      userSequence: [],
+      sequence: [getRandomId()]
+    }, () => {
+      this.runSequence();
+    });
   }
 
   runSequence() {
@@ -107,10 +117,11 @@ class App extends Component {
       id: '4',
       color: '#FF9000'
     }];
+    const { gameInProgress } = this.state;
 
     return (
       <div className="App">
-        {buttons.map(btn => (
+        {gameInProgress ? buttons.map(btn => (
           <Button 
             key={btn.id}
             color={btn.color}
@@ -118,7 +129,8 @@ class App extends Component {
             incorrect={this.state.incorrectId===btn.id}
             active={this.state.activeId===btn.id}
             handleButtonPress={this.handleButtonPress}/>
-        ))}
+        )) : 
+        <StartButton startGame={this.startGame}/>}
       </div>
     );
   }

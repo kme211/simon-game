@@ -1,0 +1,17 @@
+.start-button {
+    color: white;
+    background: #A6ED8E;
+    height: 50%;
+    width: 50%;
+    cursor: pointer;
+    font-size: 10vmax;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .4s;
+}
+
+.start-button:hover {
+    background: #62e662;
+}
