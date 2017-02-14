@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from './Button';
 import StartButton from './StartButton';
+import Counter from './Counter';
 import './App.css';
 
 function getRandomId() {
@@ -23,6 +24,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+      count: 0,
       gameInProgress: false,
       userSequence: [],
       sequence: [],
@@ -38,6 +40,7 @@ class App extends Component {
     console.log('startGame');
     this.setState( { 
       gameInProgress: true,
+      count: 0,
       userSequence: [],
       sequence: [getRandomId()]
     }, () => {
@@ -91,6 +94,7 @@ class App extends Component {
           if(complete) {
             this.setState((prevState) => {
               return {
+                count: prevState.count + 1,
                 userSequence: [],
                 sequence: prevState.sequence.concat(getRandomId())
               };
@@ -117,11 +121,14 @@ class App extends Component {
       id: '4',
       color: '#FF9000'
     }];
-    const { gameInProgress } = this.state;
+    const { gameInProgress, count } = this.state;
 
     return (
       <div className="App">
-        {gameInProgress ? buttons.map(btn => (
+        {gameInProgress ? <div className="game">
+          <Counter count={count}/>
+          {buttons.map(btn => (
+          
           <Button 
             key={btn.id}
             color={btn.color}
@@ -129,7 +136,8 @@ class App extends Component {
             incorrect={this.state.incorrectId===btn.id}
             active={this.state.activeId===btn.id}
             handleButtonPress={this.handleButtonPress}/>
-        )) : 
+        ))}
+        </div> : 
         <StartButton startGame={this.startGame}/>}
       </div>
     );
