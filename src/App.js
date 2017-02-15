@@ -110,16 +110,20 @@ class App extends Component {
   render() {
     const buttons = [{
       id: '1',
-      color: '#E65C7B'
+      color: '#E65C7B',
+      pos: 'top'
     }, {
       id: '2',
-      color: '#F9D00F'
+      color: '#F9D00F',
+      pos: 'right'
     }, {
       id: '3',
-      color: '#29C6CD'
+      color: '#29C6CD',
+      pos: 'bottom'
     }, {
       id: '4',
-      color: '#FF9000'
+      color: '#FF9000',
+      pos: 'left'
     }];
     const { gameInProgress, count } = this.state;
 
@@ -127,16 +131,18 @@ class App extends Component {
       <div className="App">
         {gameInProgress ? <div className="game">
           <Counter count={count}/>
-          {buttons.map(btn => (
-          
-          <Button 
-            key={btn.id}
-            color={btn.color}
-            id={btn.id}
-            incorrect={this.state.incorrectId===btn.id}
-            active={this.state.activeId===btn.id}
-            handleButtonPress={this.handleButtonPress}/>
-        ))}
+          <div className="buttons">
+            {buttons.map(btn => (
+              <Button 
+                key={btn.id}
+                color={btn.color}
+                id={btn.id}
+                pos={btn.pos}
+                incorrect={this.state.incorrectId===btn.id}
+                active={this.state.activeId===btn.id}
+                handleButtonPress={this.handleButtonPress}/>
+            ))}
+          </div>
         </div> : 
         <StartButton startGame={this.startGame}/>}
       </div>

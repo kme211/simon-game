@@ -1,21 +1,54 @@
+.buttons {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
 .button {
-    margin: 20px;
-    cursor: pointer;
-    flex: 1 auto;
+  position: absolute;
+  height: 400px;
+  width: 400px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.4s;
 }
 
-.button__border {
-    display: inline-block;
-    border-radius: 50%;
-    height: 120px;
-    width: 120px;
-
+.button.active {
+  opacity: 1;
 }
 
-.button__inner {
-    height: 100px;
-    width: 100px;
-    margin: 10px;
-    background: currentColor;
-    border-radius: 50%;
+.button.bottom {
+  background: #E65C7B;
+  clip-path: polygon(50% 50%, 0% 100%, 100% 100%);
+}
+
+.bottom.active {
+  margin-top: 10px;
+}
+
+.top.active {
+  margin-top: -10px;
+}
+
+.left.active {
+  margin-left: -10px;
+}
+
+.right.active {
+  margin-left: 10px;
+}
+
+.button.top {
+  background: #F9D00F;
+  clip-path: polygon(50% 50%, 0% 0%, 100% 0%);
+}
+
+.button.right {
+  background: #29C6CD;
+  clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
+}
+
+.button.left {
+  background: #FF9000;
+  clip-path: polygon(50% 50%, 0% 0%, 0% 100%);
 }

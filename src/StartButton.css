@@ -1,10 +1,10 @@
 .start-button {
     color: white;
     background: #A6ED8E;
-    height: 50%;
-    width: 50%;
+    height: 50vmin;
+    width: 50vmin;
     cursor: pointer;
-    font-size: 10vmax;
+    font-size: 10vmin;
     border-radius: 50%;
     display: flex;
     align-items: center;
