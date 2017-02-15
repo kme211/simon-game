@@ -8,6 +8,11 @@ function getRandomId() {
   return (Math.floor(Math.random() * (4 - 1 + 1)) + 1).toString();
 }
 
+function getGameSize() {
+  const windowSize = Math.min(window.innerHeight, window.innerWidth);
+  return (windowSize < 400 ? windowSize - 40 : 400);
+}
+
 let audio = [];
 for(let i = 1; i < 5; i++) {
   audio.push(
@@ -29,11 +34,20 @@ class App extends Component {
       userSequence: [],
       sequence: [],
       activeId: null,
-      incorrectId: null
+      incorrectId: null,
+      gameSize: getGameSize()
     };
-
+    
     this.handleButtonPress = this.handleButtonPress.bind(this);
     this.startGame = this.startGame.bind(this);
+  }
+  
+  componentDidMount() {
+    window.addEventListener('resize', () => {
+      this.setState({
+        gameSize: getGameSize()
+      });
+    });  
   }
 
   startGame() {
@@ -125,17 +139,18 @@ class App extends Component {
       color: '#FF9000',
       pos: 'left'
     }];
-    const { gameInProgress, count } = this.state;
-
+    const { gameSize, gameInProgress, count } = this.state;
+    
     return (
       <div className="App">
-        {gameInProgress ? <div className="game">
-          <Counter count={count}/>
+        {gameInProgress ? <div style={{width: gameSize, height: gameSize}}>
+          <Counter count={count} size={gameSize/2}/>
           <div className="buttons">
             {buttons.map(btn => (
               <Button 
                 key={btn.id}
                 color={btn.color}
+                size={gameSize}
                 id={btn.id}
                 pos={btn.pos}
                 incorrect={this.state.incorrectId===btn.id}

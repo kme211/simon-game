@@ -7,17 +7,13 @@ class Button extends Component {
     const handleClick = function(e) {
         this.props.handleButtonPress(this.props.id);
     }.bind(this);
-    const classes = `button ${this.props.pos}${this.props.active ? ' active' : ''}`;
+    const { size, active, pos } = this.props;
+    const classes = `button ${pos}${active ? ' active' : ''}`;
     return (
-        <Motion style={{scale: spring(this.props.active ? 1.25 : 1), border: spring(this.props.active ? 10 : 5)}}>
-            {({ scale, border }) => 
-                <div 
-                  className={classes}
-                  onClick={handleClick}>
-                  
-                </div>  
-            }
-        </Motion>
+      <div 
+        style={{height: size, width: size}}
+        className={classes}
+        onClick={handleClick}/>
     );
   }
 }

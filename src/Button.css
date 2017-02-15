@@ -1,16 +1,15 @@
 .buttons {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  width: 100%;
 }
 
 .button {
   position: absolute;
-  height: 400px;
-  width: 400px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.4s;
+  opacity: 0.75;
 }
 
 .button.active {

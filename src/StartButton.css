@@ -1,15 +1,16 @@
 .start-button {
     color: white;
     background: #A6ED8E;
-    height: 50vmin;
-    width: 50vmin;
+    height: 200px;
+    width: 200px;
     cursor: pointer;
-    font-size: 10vmin;
+    font-size: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background .4s;
+    text-transform: uppercase;
 }
 
 .start-button:hover {
