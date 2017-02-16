@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './StartButton.css';
 
-class StartButton extends Component {
-    render() {
-        return (
-            <div className="start-button" onClick={this.props.startGame}>Start</div>
-        )
-    }
-}
+const StartButton = ({ startGame, size }) => (
+  <div className="start-button" style={{height: `${size}px`, width: `${size}px`}} onClick={startGame}>Start</div>
+);
 
 export default StartButton;

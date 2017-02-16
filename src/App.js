@@ -157,9 +157,8 @@ class App extends Component {
     
     return (
       <div className="App">
-        {gameInProgress ? <div style={{width: gameSize, height: gameSize, pointerEvents: disablePlay ? 'none' : 'auto'}}>
-          <Counter count={count} size={gameSize/2}/>
-          <div className="buttons">
+          <Counter count={count} size={gameSize / 2}/>
+          <div className="buttons" style={{height: `${gameSize}px`, width: `${gameSize}px`}}>
             {positions.map(pos => (
               <Button 
                 key={pos}
@@ -170,8 +169,7 @@ class App extends Component {
                 handleButtonPress={this.handleButtonPress}/>
             ))}
           </div>
-        </div> : 
-        <StartButton startGame={this.startGame}/>}
+          {!gameInProgress && <StartButton size={gameSize / 2}startGame={this.startGame}/>}
       </div>
     );
   }

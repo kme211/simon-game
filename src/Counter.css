@@ -3,7 +3,6 @@
     z-index: 2;
     background: white;
     border-radius: 50%;
-    transform: translateY(50%) translateX(50%);
     font-size: 94px;
     color: #495664;
     display: flex;

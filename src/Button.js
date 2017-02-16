@@ -3,10 +3,11 @@ import './Button.css';
 
 class Button extends Component {
   render() {
+    const { size, active, incorrect, pos, handleButtonPress } = this.props;
     const handleClick = function(e) {
-        this.props.handleButtonPress(this.props.pos);
+        handleButtonPress(pos);
     }.bind(this);
-    const { size, active, incorrect, pos } = this.props;
+    
     const classes = `button ${pos}${active && !incorrect ? ' active' : ''}${incorrect ? ' incorrect' : ''}`;
     return (
       <div 
