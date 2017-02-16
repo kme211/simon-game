@@ -1,6 +1,6 @@
 .start-button {
     color: white;
-    background: #A6ED8E;
+    background: #36D1C4;
     height: 200px;
     width: 200px;
     cursor: pointer;
@@ -14,5 +14,5 @@
 }
 
 .start-button:hover {
-    background: #62e662;
+    background: #30c1b5;
 }

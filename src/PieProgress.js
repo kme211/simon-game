@@ -23,18 +23,7 @@ class PieProgress extends Component {
     const endAngle = startAngle + percentage * Math.PI * 2 / 100;
 
     const x1 = cx + r * Math.sin(startAngle),
-      x2 = cx + r * Math.sin(endAngle),
-      y1 = cy - r * Math.cos(startAngle),
-      y2 = cy - r * Math.cos(endAngle);
-
-    // This is a flag for angles larger than than a half circle
-    // It is required by the SVG arc drawing component
-    let big = 0;
-    if (endAngle - startAngle > Math.PI) {
-      big = 1;
-    }
-    
-    console.log('', length, this.props.progress)
+      y1 = cy - r * Math.cos(startAngle);
     
     return (
       <Motion style={{

@@ -4,8 +4,10 @@ import StartButton from './StartButton';
 import Counter from './Counter';
 import './App.css';
 
-function getRandomId() {
-  return (Math.floor(Math.random() * (4 - 1 + 1)) + 1).toString();
+function getRandomPos(positions) {
+  const index = (Math.floor(Math.random() * (3 - 0 + 1)));
+  console.log('index', index)
+  return positions[index];
 }
 
 function getGameSize() {
@@ -14,14 +16,16 @@ function getGameSize() {
 }
 
 let audio = [];
+let positions = ['top', 'right', 'bottom', 'left'];
 for(let i = 1; i < 5; i++) {
-  audio.push(
-    new Audio(`https://s3.amazonaws.com/freecodecamp/simonSound${i}.mp3`)
-  );
+  audio.push({
+    pos: positions[i-1],
+    sound: new Audio(`https://s3.amazonaws.com/freecodecamp/simonSound${i}.mp3`)
+  });
 }
 
-function playSound(id) {
-  audio[id-1].play();
+function playSound(pos) {
+  audio.find(sound => sound.pos === pos).sound.play();
 }
 
 class App extends Component {
@@ -33,8 +37,9 @@ class App extends Component {
       gameInProgress: false,
       userSequence: [],
       sequence: [],
-      activeId: null,
-      incorrectId: null,
+      activePositions: [],
+      incorrectPos: null,
+      disablePlay: false,
       gameSize: getGameSize()
     };
     
@@ -56,7 +61,7 @@ class App extends Component {
       gameInProgress: true,
       count: 0,
       userSequence: [],
-      sequence: [getRandomId()]
+      sequence: [getRandomPos(positions)]
     }, () => {
       this.runSequence();
     });
@@ -64,9 +69,14 @@ class App extends Component {
 
   runSequence() {
     console.log('runSequence')
-    this.state.sequence.forEach((id, index) => {
+    const { sequence } = this.state;
+    this.setState({ disablePlay: true });
+    sequence.forEach((pos, index) => {
       window.setTimeout(() => {
-        this.setActive(id);
+        this.setActive(pos);
+        if(index === (sequence.length - 1)) {
+          this.setState({ disablePlay : false });
+        }
       }, 1000 * (index + 1))
     })
   }
@@ -75,86 +85,88 @@ class App extends Component {
     console.log('getResults');
     console.dir({userSequence, sequence });
     let results = { correct: true, complete: false };
-    userSequence.forEach((id, index) => {
-      if(id !== sequence[index]) results.correct = false;
+    userSequence.forEach((pos, index) => {
+      if(pos !== sequence[index]) results.correct = false;
     });
     if(userSequence.length === sequence.length) results.complete = true;
     return results;
   }
 
-  setActive(id, callback) {
-    console.log('setActive', id);
-    playSound(id);
-    this.setState({ activeId: id });
+  setActive(pos, callback) {
+    playSound(pos);
+    this.setState((prevState) => {
+      return { activePositions: prevState.activePositions.concat(pos) };
+    });
 
     window.setTimeout(() => {
-      this.setState({ activeId: null });
+      this.setState((prevState) => {
+        const { activePositions } = prevState;
+        const index = activePositions.findIndex(position => position === pos);
+        return { 
+          activePositions: [
+            ...activePositions.slice(0, index),
+            ...activePositions.slice(index + 1)
+          ]
+        };
+      });
       if(callback) callback();
     }, 500)
   }
 
-  handleButtonPress(id) {
-    console.log('clicked', id);
+  handleButtonPress(pos) {
+    console.log('clicked', pos);
     this.setState((prevState) => {
       return {
-        userSequence: prevState.userSequence.concat(id)
+        userSequence: prevState.userSequence.concat(pos)
       };
     }, () => {
       const { sequence, userSequence } = this.state;
       const { correct, complete } = this.getResults({ userSequence, sequence });
       console.log('correct', correct, 'complete', complete);
       if(correct) {
-        this.setActive(id, () => {
+        this.setActive(pos, () => {
           if(complete) {
             this.setState((prevState) => {
               return {
                 count: prevState.count + 1,
                 userSequence: [],
-                sequence: prevState.sequence.concat(getRandomId())
+                sequence: prevState.sequence.concat(getRandomPos(positions))
               };
             }, () => {
               this.runSequence();
-            })
+            });
           }
         });
+      } else {
+        this.setState({ incorrectPos : pos });
+        this.setActive(pos, () => {
+          this.setState({ 
+            incorrectPos: null,
+            userSequence: []
+          }, () => {
+            this.runSequence();
+          });
+        });
+        
       }
     })
   }
   
   render() {
-    const buttons = [{
-      id: '1',
-      color: '#E65C7B',
-      pos: 'top'
-    }, {
-      id: '2',
-      color: '#F9D00F',
-      pos: 'right'
-    }, {
-      id: '3',
-      color: '#29C6CD',
-      pos: 'bottom'
-    }, {
-      id: '4',
-      color: '#FF9000',
-      pos: 'left'
-    }];
-    const { gameSize, gameInProgress, count } = this.state;
+    const { gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
     
     return (
       <div className="App">
-        {gameInProgress ? <div style={{width: gameSize, height: gameSize}}>
+        {gameInProgress ? <div style={{width: gameSize, height: gameSize, pointerEvents: disablePlay ? 'none' : 'auto'}}>
           <Counter count={count} size={gameSize/2}/>
           <div className="buttons">
-            {buttons.map(btn => (
+            {positions.map(pos => (
               <Button 
-                key={btn.id}
-                color={btn.color}
+                key={pos}
                 size={gameSize}
-                id={btn.id}
-                pos={btn.pos}
-                incorrect={this.state.incorrectId===btn.id}
-                active={this.state.activeId===btn.id}
+                pos={pos}
+                incorrect={incorrectPos===pos}
+                active={activePositions.indexOf(pos) !== -1}
                 handleButtonPress={this.handleButtonPress}/>
             ))}
           </div>

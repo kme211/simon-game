@@ -1,7 +1,7 @@
 .buttons {
   position: relative;
   width: 100%;
-  width: 100%;
+  background: black;
 }
 
 .button {
@@ -15,6 +15,7 @@
 .button.active {
   opacity: 1;
 }
+
 
 .button.bottom {
   background: #E65C7B;
@@ -50,4 +51,9 @@
 .button.left {
   background: #FF9000;
   clip-path: polygon(50% 50%, 0% 0%, 0% 100%);
+}
+
+.button.incorrect {
+  transform: scale(0.75, 0.75);
+  background: #DC3737;
 }
