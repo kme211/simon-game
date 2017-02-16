@@ -12,17 +12,16 @@ function getRandomPos(positions) {
 
 function getGameSize() {
   const windowSize = Math.min(window.innerHeight, window.innerWidth);
-  return (windowSize < 400 ? windowSize - 40 : 400);
+  return (windowSize < 480 ? windowSize - 80 : 400);
 }
 
-let audio = [];
 let positions = ['top', 'right', 'bottom', 'left'];
-for(let i = 1; i < 5; i++) {
-  audio.push({
-    pos: positions[i-1],
-    sound: new Audio(`https://s3.amazonaws.com/freecodecamp/simonSound${i}.mp3`)
-  });
-}
+const audio = positions.map((pos, index) => {
+  return {
+    pos,
+    sound: new Audio(`https://s3.amazonaws.com/freecodecamp/simonSound${index + 1}.mp3`)
+  }
+});
 
 function playSound(pos) {
   audio.find(sound => sound.pos === pos).sound.play();
@@ -158,7 +157,7 @@ class App extends Component {
     return (
       <div className="App">
           <Counter count={count} size={gameSize / 2}/>
-          <div className="buttons" style={{height: `${gameSize}px`, width: `${gameSize}px`}}>
+          <div className="buttons" style={{height: `${gameSize}px`, width: `${gameSize}px`, pointerEvents: !gameInProgress || disablePlay ? 'none' : 'auto'}}>
             {positions.map(pos => (
               <Button 
                 key={pos}

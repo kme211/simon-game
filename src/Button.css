@@ -4,11 +4,18 @@
 }
 
 .button {
+  padding: 0;
+  border: none;
+  display: block;
   position: absolute;
+  left: 0;
+  top: 0;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.4s;
   opacity: 0.75;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  outline: none;  
 }
 
 .button.active {

@@ -1,4 +1,5 @@
 .start-button {
+    color: inherit;
     position: absolute;
     z-index: 3;
     background: white;
@@ -11,4 +12,7 @@
     align-items: center;
     justify-content: center;
     transition: background .4s;
+    border: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    outline: none;  
 }
