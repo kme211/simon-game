@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  height: 100vh;
+  height: 100%;
   font-family: 'Cabin', sans-serif;
   margin: 0;
   padding: 0;
@@ -8,17 +8,19 @@
   color: #495664;
 }
 
+
 main {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 18px)
+  height: calc(100% - 40px);
 }
 
 header {
   background: #D3D6DB;
   display: flex;
   justify-content: space-between;
+  flex: 0 100%;
 }
 
 header > * {
@@ -26,6 +28,7 @@ header > * {
 }
 
 header > button {
+  font-size: 14px;
   font-family: inherit;
   border: none;
   display: inline-block;
@@ -35,8 +38,8 @@ header > button {
 }
 
 h1 {
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 20px;
+  line-height: 20px;
   font-weight: 400;
   text-align: left;
   margin: 0;

@@ -68,7 +68,6 @@ class App extends Component {
   }
 
   startGame() {
-    console.log('startGame');
     this.setState({ 
       gameInProgress: true,
       count: 0,
@@ -80,7 +79,6 @@ class App extends Component {
   }
 
   runSequence() {
-    console.log('runSequence')
     const { sequence } = this.state;
     this.setState({ disablePlay: true });
     sequence.forEach((pos, index) => {
@@ -96,8 +94,6 @@ class App extends Component {
   }
 
   getResults({ userSequence, sequence }) {
-    console.log('getResults');
-    console.dir({userSequence, sequence });
     let results = { correct: true, complete: false };
     userSequence.forEach((pos, index) => {
       if(pos !== sequence[index]) results.correct = false;
@@ -130,9 +126,7 @@ class App extends Component {
   }
 
   onRestart(e) {
-    console.log('restart');
     intervalIds.forEach(id => {
-      console.log('clearing interval id', id)
       window.clearInterval(id);
     });
     intervalIds = [];
@@ -147,7 +141,6 @@ class App extends Component {
   }
 
   handleButtonPress(pos) {
-    console.log('clicked', pos);
     this.setState((prevState) => {
       return {
         userSequence: prevState.userSequence.concat(pos)
@@ -155,7 +148,6 @@ class App extends Component {
     }, () => {
       const { count, sequence, userSequence } = this.state;
       const { correct, complete } = this.getResults({ userSequence, sequence });
-      console.log('correct', correct, 'complete', complete);
       if(correct) {
         this.setActive(pos, () => {
           if(complete) {
@@ -170,7 +162,6 @@ class App extends Component {
                 this.runSequence();
               });
             } else {
-              console.log('You won!');
               this.setState({
                 count: COUNT_TO_WIN,
                 disablePlay: true,
