@@ -24,8 +24,18 @@ const audio = positions.map((pos, index) => {
   }
 });
 
+let intervalIds = [];
+
 function playSound(pos) {
   audio.find(sound => sound.pos === pos).sound.play();
+}
+
+function getUpdatedIntervalIds(ids, id) {
+  const index = ids.indexOf(id);
+  return [
+    ...ids.slice(0, index),
+    ...ids.slice(index + 1)
+  ];
 }
 
 class App extends Component {
@@ -74,13 +84,15 @@ class App extends Component {
     const { sequence } = this.state;
     this.setState({ disablePlay: true });
     sequence.forEach((pos, index) => {
-      window.setTimeout(() => {
+      let id = window.setTimeout(() => {
+        intervalIds = getUpdatedIntervalIds(intervalIds, id);
         this.setActive(pos);
         if(index === (sequence.length - 1)) {
           this.setState({ disablePlay : false });
         }
-      }, 1000 * (index + 1))
-    })
+      }, 1000 * (index + 1));
+      intervalIds.push(id);
+    });
   }
 
   getResults({ userSequence, sequence }) {
@@ -100,7 +112,8 @@ class App extends Component {
       return { activePositions: prevState.activePositions.concat(pos) };
     });
 
-    window.setTimeout(() => {
+    let id = window.setTimeout(() => {
+      intervalIds = getUpdatedIntervalIds(intervalIds, id);
       this.setState((prevState) => {
         const { activePositions } = prevState;
         const index = activePositions.findIndex(position => position === pos);
@@ -113,10 +126,24 @@ class App extends Component {
       });
       if(callback) callback();
     }, 500);
+    intervalIds.push(id);
   }
 
   onRestart(e) {
-    console.log('restart')
+    console.log('restart');
+    intervalIds.forEach(id => {
+      console.log('clearing interval id', id)
+      window.clearInterval(id);
+    });
+    intervalIds = [];
+    this.setState({
+      gameInProgress: false,
+      outcome: null,
+      sequence: [],
+      userSequence: [],
+      count: 0,
+      activePositions: []
+    });
   }
 
   handleButtonPress(pos) {
