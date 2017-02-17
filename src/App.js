@@ -6,7 +6,6 @@ import './App.css';
 
 function getRandomPos(positions) {
   const index = (Math.floor(Math.random() * (3 - 0 + 1)));
-  console.log('index', index)
   return positions[index];
 }
 
@@ -56,7 +55,7 @@ class App extends Component {
 
   startGame() {
     console.log('startGame');
-    this.setState( { 
+    this.setState({ 
       gameInProgress: true,
       count: 0,
       userSequence: [],
@@ -109,7 +108,7 @@ class App extends Component {
         };
       });
       if(callback) callback();
-    }, 500)
+    }, 500);
   }
 
   handleButtonPress(pos) {
@@ -153,11 +152,16 @@ class App extends Component {
   
   render() {
     const { gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
+    const containerStyles = {
+      height: `${gameSize}px`, 
+      width: `${gameSize}px`, 
+      pointerEvents: !gameInProgress || disablePlay ? 'none' : 'auto'
+    };
     
     return (
       <div className="App">
           <Counter count={count} size={gameSize / 2}/>
-          <div className="buttons" style={{height: `${gameSize}px`, width: `${gameSize}px`, pointerEvents: !gameInProgress || disablePlay ? 'none' : 'auto'}}>
+          <div className="buttons" style={containerStyles}>
             {positions.map(pos => (
               <Button 
                 key={pos}
@@ -168,7 +172,7 @@ class App extends Component {
                 handleButtonPress={this.handleButtonPress}/>
             ))}
           </div>
-          {!gameInProgress && <StartButton size={gameSize / 2}startGame={this.startGame}/>}
+          {!gameInProgress && <StartButton size={gameSize / 2} startGame={this.startGame}/>}
       </div>
     );
   }

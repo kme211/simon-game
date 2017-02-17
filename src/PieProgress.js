@@ -1,34 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Motion, spring } from 'react-motion';
 
-class PieProgress extends Component {
-  render() {
-    const width = this.props.size;
-    const height = this.props.size;
-    
-    const length = (width * 2) * Math.PI;
-    
-    const cx = width / 2,
-      cy = height / 2,
-      startAngle = 0;
+// Math from http://www.jqueryscript.net/loading/Animated-Circle-Progress-Bar-with-jQuery-SVG-asPieProgress.html
 
-    const barsize = this.props.barsize;
+const PieProgress = ({ size, barsize, progress, color }) => {
+  const width = size;
+  const height = size;
+  
+  const length = (width * 2) * Math.PI;
+  
+  const cx = width / 2,
+        cy = height / 2,
+        startAngle = 0;
 
-    const r = Math.min(cx, cy) - barsize / 2;
-    let percentage = 100 * this.props.progress;
+  const r = Math.min(cx, cy) - barsize / 2;
+  let percentage = 100 * progress;
 
-    if (percentage === 100) {
-      percentage -= 0.0001;
-    }
-    const endAngle = startAngle + percentage * Math.PI * 2 / 100;
+  if (percentage === 100) {
+    percentage -= 0.0001;
+  }
+  const endAngle = startAngle + percentage * Math.PI * 2 / 100;
 
-    const x1 = cx + r * Math.sin(startAngle),
-      y1 = cy - r * Math.cos(startAngle);
-    
-    return (
-      <Motion style={{
+  const x1 = cx + r * Math.sin(startAngle);
+  const y1 = cy - r * Math.cos(startAngle);
+
+  return (
+    <Motion style={{
           endAngle: spring(endAngle),
-          strokeDashOffset: spring(length - (length * this.props.progress))
+          strokeDashOffset: spring(length - (length * progress))
         }}>
         
       {({endAngle, strokeDashOffset}) =>
@@ -48,7 +47,7 @@ class PieProgress extends Component {
         <path 
           fill="none" 
           strokeWidth={barsize} 
-          stroke={this.props.color} 
+          stroke={color} 
           d={`M${x1},${y1} A${r},${r} 0 ${endAngle - startAngle > Math.PI ? 1 : 0} 1 ${cx + r * Math.sin(endAngle)},${cy - r * Math.cos(endAngle)}`}
           style={{
             strokeDasharray: `${length}, ${length}`,
@@ -57,10 +56,8 @@ class PieProgress extends Component {
       </svg>
       }
       
-      
       </Motion>
-    );
-  }
+  );
 }
 
 export default PieProgress;
