@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Button from './Button';
 import StartButton from './StartButton';
 import Counter from './Counter';
+import Header from './Header';
+import { COUNT_TO_WIN, OUTCOME_WON } from './constants';
 import './App.css';
 
 function getRandomPos(positions) {
@@ -14,7 +16,7 @@ function getGameSize() {
   return (windowSize < 480 ? windowSize - 80 : 400);
 }
 
-let positions = ['top', 'right', 'bottom', 'left'];
+const positions = ['top', 'right', 'bottom', 'left'];
 const audio = positions.map((pos, index) => {
   return {
     pos,
@@ -38,11 +40,13 @@ class App extends Component {
       activePositions: [],
       incorrectPos: null,
       disablePlay: false,
-      gameSize: getGameSize()
+      gameSize: getGameSize(),
+      outcome: null
     };
     
     this.handleButtonPress = this.handleButtonPress.bind(this);
     this.startGame = this.startGame.bind(this);
+    this.onRestart = this.onRestart.bind(this);
   }
   
   componentDidMount() {
@@ -111,6 +115,10 @@ class App extends Component {
     }, 500);
   }
 
+  onRestart(e) {
+    console.log('restart')
+  }
+
   handleButtonPress(pos) {
     console.log('clicked', pos);
     this.setState((prevState) => {
@@ -118,21 +126,30 @@ class App extends Component {
         userSequence: prevState.userSequence.concat(pos)
       };
     }, () => {
-      const { sequence, userSequence } = this.state;
+      const { count, sequence, userSequence } = this.state;
       const { correct, complete } = this.getResults({ userSequence, sequence });
       console.log('correct', correct, 'complete', complete);
       if(correct) {
         this.setActive(pos, () => {
           if(complete) {
-            this.setState((prevState) => {
-              return {
-                count: prevState.count + 1,
-                userSequence: [],
-                sequence: prevState.sequence.concat(getRandomPos(positions))
-              };
-            }, () => {
-              this.runSequence();
-            });
+            if(count < (COUNT_TO_WIN - 1)) {
+              this.setState((prevState) => {
+                return {
+                  count: prevState.count + 1,
+                  userSequence: [],
+                  sequence: prevState.sequence.concat(getRandomPos(positions))
+                };
+              }, () => {
+                this.runSequence();
+              });
+            } else {
+              console.log('You won!');
+              this.setState({
+                count: COUNT_TO_WIN,
+                disablePlay: true,
+                outcome: OUTCOME_WON
+              });
+            }
           }
         });
       } else {
@@ -151,28 +168,50 @@ class App extends Component {
   }
   
   render() {
-    const { gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
-    const containerStyles = {
+    const { outcome, gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
+    let containerStyles = {
       height: `${gameSize}px`, 
       width: `${gameSize}px`, 
       pointerEvents: !gameInProgress || disablePlay ? 'none' : 'auto'
     };
+
+    if(outcome === OUTCOME_WON) {
+      containerStyles = Object.assign(
+        {}, 
+        containerStyles, 
+        { 
+          animationName: 'game-won-container', 
+          animationIterationCount: 'infinite', 
+          animationDuration: '8s',
+          animationTimingFunction: 'ease-in-out'
+        }
+      )
+    }
     
     return (
       <div className="App">
-          <Counter count={count} size={gameSize / 2}/>
-          <div className="buttons" style={containerStyles}>
-            {positions.map(pos => (
-              <Button 
-                key={pos}
-                size={gameSize}
-                pos={pos}
-                incorrect={incorrectPos===pos}
-                active={activePositions.indexOf(pos) !== -1}
-                handleButtonPress={this.handleButtonPress}/>
-            ))}
-          </div>
-          {!gameInProgress && <StartButton size={gameSize / 2} startGame={this.startGame}/>}
+          <Header 
+          gameInProgress={gameInProgress}
+          onRestart={this.onRestart}/>
+          <main>
+            <Counter 
+              count={count} 
+              progress={count/COUNT_TO_WIN}
+              size={gameSize / 2}/>
+            <div className="buttons" style={containerStyles}>
+              {positions.map(pos => (
+                <Button 
+                  key={pos}
+                  size={gameSize}
+                  pos={pos}
+                  incorrect={incorrectPos===pos}
+                  active={activePositions.indexOf(pos) !== -1}
+                  outcome={outcome}
+                  handleButtonPress={this.handleButtonPress}/>
+              ))}
+            </div>
+            {!gameInProgress && <StartButton size={gameSize / 2} startGame={this.startGame}/>}
+          </main>
       </div>
     );
   }
