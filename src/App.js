@@ -51,12 +51,14 @@ class App extends Component {
       incorrectPos: null,
       disablePlay: false,
       gameSize: getGameSize(),
-      outcome: null
+      outcome: null,
+      isStrictModeOn: false
     };
     
     this.handleButtonPress = this.handleButtonPress.bind(this);
     this.startGame = this.startGame.bind(this);
     this.onRestart = this.onRestart.bind(this);
+    this.toggleStrictMode = this.toggleStrictMode.bind(this);
   }
   
   componentDidMount() {
@@ -125,11 +127,7 @@ class App extends Component {
     intervalIds.push(id);
   }
 
-  onRestart(e) {
-    intervalIds.forEach(id => {
-      window.clearInterval(id);
-    });
-    intervalIds = [];
+  restartGame() {
     this.setState({
       gameInProgress: false,
       outcome: null,
@@ -138,6 +136,14 @@ class App extends Component {
       count: 0,
       activePositions: []
     });
+  }
+
+  onRestart(e) {
+    intervalIds.forEach(id => {
+      window.clearInterval(id);
+    });
+    intervalIds = [];
+    this.restartGame();
   }
 
   handleButtonPress(pos) {
@@ -184,9 +190,17 @@ class App extends Component {
       }
     })
   }
+
+  toggleStrictMode(e) {
+    this.setState((prevState) => {
+      return {
+        isStrictModeOn: !prevState.isStrictModeOn
+      };
+    });
+  }
   
   render() {
-    const { outcome, gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
+    const { isStrictModeOn, outcome, gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
     let containerStyles = {
       height: `${gameSize}px`, 
       width: `${gameSize}px`, 
@@ -199,7 +213,6 @@ class App extends Component {
         containerStyles, 
         { 
           animationName: 'game-won-container', 
-          animationIterationCount: 'infinite', 
           animationDuration: '8s',
           animationTimingFunction: 'ease-in-out'
         }
@@ -210,6 +223,8 @@ class App extends Component {
       <div className="App">
           <Header 
           gameInProgress={gameInProgress}
+          strictMode={isStrictModeOn}
+          onToggleStrictMode={this.toggleStrictMode}
           onRestart={this.onRestart}/>
           <main>
             <Counter 
