@@ -74,7 +74,9 @@ class App extends Component {
       gameInProgress: true,
       count: 0,
       userSequence: [],
-      sequence: [getRandomPos(positions)]
+      sequence: [getRandomPos(positions)],
+      outcome: null, 
+      activePositions: []
     }, () => {
       this.runSequence();
     });
@@ -127,23 +129,12 @@ class App extends Component {
     intervalIds.push(id);
   }
 
-  restartGame() {
-    this.setState({
-      gameInProgress: false,
-      outcome: null,
-      sequence: [],
-      userSequence: [],
-      count: 0,
-      activePositions: []
-    });
-  }
-
   onRestart(e) {
     intervalIds.forEach(id => {
       window.clearInterval(id);
     });
     intervalIds = [];
-    this.restartGame();
+    this.startGame();
   }
 
   handleButtonPress(pos) {
@@ -177,13 +168,19 @@ class App extends Component {
           }
         });
       } else {
-        this.setState({ incorrectPos : pos });
+        this.setState({ incorrectPos : pos, disablePlay: true });
         this.setActive(pos, () => {
           this.setState({ 
             incorrectPos: null,
+            disablePlay: false, 
             userSequence: []
           }, () => {
-            this.runSequence();
+            const { isStrictModeOn } = this.state;
+            if(isStrictModeOn) {
+              this.startGame();
+            } else {
+              this.runSequence(); 
+            }
           });
         });
         
