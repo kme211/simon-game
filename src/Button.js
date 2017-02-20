@@ -1,6 +1,6 @@
 import React from 'react';
 import './Button.css';
-import { OUTCOME_WON } from './constants';
+import { OUTCOME_WON, ANIMATION_STYLES, BUTTON_ANIMATION_NAME } from './constants';
 
 const Button = ({ outcome, size, active, incorrect, pos, handleButtonPress }) => {
   const handleClick = function(e) {
@@ -16,11 +16,8 @@ const Button = ({ outcome, size, active, incorrect, pos, handleButtonPress }) =>
     styles = Object.assign(
       {},
       styles,
-      {
-        animationName: 'game-won-button',
-        animationDuration: '8s',
-        animationTimingFunction: 'ease-in-out'
-      }
+      ANIMATION_STYLES,
+      { animationName: BUTTON_ANIMATION_NAME }
     );
   }
 

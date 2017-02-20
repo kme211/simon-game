@@ -3,7 +3,7 @@ import Button from './Button';
 import StartButton from './StartButton';
 import Counter from './Counter';
 import Header from './Header';
-import { COUNT_TO_WIN, OUTCOME_WON } from './constants';
+import { COUNT_TO_WIN, OUTCOME_WON, ANIMATION_STYLES, CONTAINER_ANIMATION_NAME } from './constants';
 import './App.css';
 
 function getRandomPos(positions) {
@@ -43,7 +43,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      count: 0,
+      count: 1,
       gameInProgress: false,
       userSequence: [],
       sequence: [],
@@ -66,13 +66,18 @@ class App extends Component {
       this.setState({
         gameSize: getGameSize()
       });
-    });  
+    });
+    window.addEventListener('animationend', (e) => {
+      if(e.animationName === CONTAINER_ANIMATION_NAME) {
+        this.startGame();
+      }
+    });
   }
 
   startGame() {
     this.setState({ 
       gameInProgress: true,
-      count: 0,
+      count: 1,
       userSequence: [],
       sequence: [getRandomPos(positions)],
       outcome: null, 
@@ -148,7 +153,7 @@ class App extends Component {
       if(correct) {
         this.setActive(pos, () => {
           if(complete) {
-            if(count < (COUNT_TO_WIN - 1)) {
+            if(count < COUNT_TO_WIN) {
               this.setState((prevState) => {
                 return {
                   count: prevState.count + 1,
@@ -160,10 +165,10 @@ class App extends Component {
               });
             } else {
               this.setState({
-                count: COUNT_TO_WIN,
                 disablePlay: true,
                 outcome: OUTCOME_WON
               });
+              
             }
           }
         });
@@ -208,12 +213,9 @@ class App extends Component {
       containerStyles = Object.assign(
         {}, 
         containerStyles, 
-        { 
-          animationName: 'game-won-container', 
-          animationDuration: '8s',
-          animationTimingFunction: 'ease-in-out'
-        }
-      )
+        ANIMATION_STYLES,
+        { animationName: CONTAINER_ANIMATION_NAME }
+      );
     }
     
     return (
