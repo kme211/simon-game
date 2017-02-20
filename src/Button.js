@@ -18,7 +18,6 @@ const Button = ({ outcome, size, active, incorrect, pos, handleButtonPress }) =>
       styles,
       {
         animationName: 'game-won-button',
-        animationIterationCount: 'infinite', 
         animationDuration: '8s',
         animationTimingFunction: 'ease-in-out'
       }

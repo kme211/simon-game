@@ -51,12 +51,14 @@ class App extends Component {
       incorrectPos: null,
       disablePlay: false,
       gameSize: getGameSize(),
-      outcome: null
+      outcome: null,
+      isStrictModeOn: false
     };
     
     this.handleButtonPress = this.handleButtonPress.bind(this);
     this.startGame = this.startGame.bind(this);
     this.onRestart = this.onRestart.bind(this);
+    this.toggleStrictMode = this.toggleStrictMode.bind(this);
   }
   
   componentDidMount() {
@@ -72,7 +74,9 @@ class App extends Component {
       gameInProgress: true,
       count: 0,
       userSequence: [],
-      sequence: [getRandomPos(positions)]
+      sequence: [getRandomPos(positions)],
+      outcome: null, 
+      activePositions: []
     }, () => {
       this.runSequence();
     });
@@ -130,14 +134,7 @@ class App extends Component {
       window.clearInterval(id);
     });
     intervalIds = [];
-    this.setState({
-      gameInProgress: false,
-      outcome: null,
-      sequence: [],
-      userSequence: [],
-      count: 0,
-      activePositions: []
-    });
+    this.startGame();
   }
 
   handleButtonPress(pos) {
@@ -171,22 +168,36 @@ class App extends Component {
           }
         });
       } else {
-        this.setState({ incorrectPos : pos });
+        this.setState({ incorrectPos : pos, disablePlay: true });
         this.setActive(pos, () => {
           this.setState({ 
             incorrectPos: null,
+            disablePlay: false, 
             userSequence: []
           }, () => {
-            this.runSequence();
+            const { isStrictModeOn } = this.state;
+            if(isStrictModeOn) {
+              this.startGame();
+            } else {
+              this.runSequence(); 
+            }
           });
         });
         
       }
     })
   }
+
+  toggleStrictMode(e) {
+    this.setState((prevState) => {
+      return {
+        isStrictModeOn: !prevState.isStrictModeOn
+      };
+    });
+  }
   
   render() {
-    const { outcome, gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
+    const { isStrictModeOn, outcome, gameSize, gameInProgress, count, incorrectPos, activePositions, disablePlay } = this.state;
     let containerStyles = {
       height: `${gameSize}px`, 
       width: `${gameSize}px`, 
@@ -199,7 +210,6 @@ class App extends Component {
         containerStyles, 
         { 
           animationName: 'game-won-container', 
-          animationIterationCount: 'infinite', 
           animationDuration: '8s',
           animationTimingFunction: 'ease-in-out'
         }
@@ -210,6 +220,8 @@ class App extends Component {
       <div className="App">
           <Header 
           gameInProgress={gameInProgress}
+          strictMode={isStrictModeOn}
+          onToggleStrictMode={this.toggleStrictMode}
           onRestart={this.onRestart}/>
           <main>
             <Counter 
