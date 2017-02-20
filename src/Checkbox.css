@@ -4,7 +4,6 @@
 
 .checkbox__inner {
     box-sizing: border-box;
-    border: 1px solid #495664;
     background: white;
     width: 20px;
     height: 20px;
@@ -17,4 +16,5 @@
 .checkbox__label {
     line-height: 20px;
     display: inline-block;
+    float: right;
 }

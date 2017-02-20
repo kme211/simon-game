@@ -8,7 +8,7 @@ class Checkbox extends Component {
         return (
             <div className="checkbox">
                 <div className="checkbox__inner" onClick={onToggle}>
-                    {checked && <div><Checkmark/></div>}
+                    {checked && <Checkmark/>}
                 </div>
                 <div className="checkbox__label">{ label }</div>
             </div>
